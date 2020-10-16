@@ -1,0 +1,6 @@
+
+*.pyc
+
+bak/
+
+.~lock.mapDef.xlsx#
