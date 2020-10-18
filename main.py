@@ -54,6 +54,24 @@ hello_button2 = pygame_gui.elements.UIButton(relative_rect=pg.Rect((50, 200), (1
                                              text='Say Hello2',
                                              manager=manager)
 
+#hello_button2 = pygame_gui.elements.UIButton(relative_rect=pg.Rect((50, 200), (100, 50)),
+#                                             text='Say Hello2',
+#                                             manager=manager)
+#thing = pygame_gui.elements.UIVerticalScrollBar(relative_rect=pg.Rect((50, 200), (100, 50)), manager=manager, visible_percentage=0.5)
+#thing2= pygame_gui.elements.UIDropDownMenu(relative_rect=pg.Rect((50, 200), (100, 50)), manager=manager, options_list=["eggs", "ham", "spam"], starting_option="eggs")
+
+
+htm_text_block_2 = pygame_gui.elements.UITextBox('<font face=fira_code size=2 color=#000000><b>Hey, What the heck!</b>'
+                             '<br><br>'
+                             'This is some <a href="test">text</a> in a different box,'
+                             ' hooray for variety - '
+                             'if you want then you should put a ring upon it. '
+                             '<body bgcolor=#990000>What if we do a really long word?</body> '
+                             '<b><i>derp FALALALALALALALXALALALXALALALALAAPaaaaarp gosh'
+                             '</b></i></font>',
+                             pg.Rect((50, 200), (100, 50)),
+                             manager=manager,
+                             object_id="#text_box_2")
 
 window_surface = pg.display.set_mode((400, 400))
 
@@ -80,6 +98,9 @@ while not done:
             if event.key == pg.K_q and gui_on:
                 gui_on = False
                 player.rect.y -= 16
+        elif event.type == pg.USEREVENT:
+            if event.user_type == pygame_gui.UI_DROP_DOWN_MENU_CHANGED:
+                print("Selected option:", event.text)
         if gui_on:
             manager.process_events(event)
         
@@ -106,8 +127,6 @@ while not done:
         if player.rect.colliderect(sprite.rect):
             gui_on = True
             time_delta = clock.tick(60)/1000.0
-            #player.rect.x = player.prevX
-            #player.rect.y = player.prevY 
 
     for sprite in doorSprites[:]:
         if player.rect.colliderect(sprite.rect):
@@ -122,7 +141,6 @@ while not done:
         pg.display.update()
     else:
         gMap.render_display()
-
 
         all_sprites_list.update()
         all_sprites_list.draw(screen)
