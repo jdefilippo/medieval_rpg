@@ -5,7 +5,6 @@ import pygame as pg
 
 from model import *
 
-
 SCREEN_WIDTH  = 400
 SCREEN_LENGTH = 400
 TILE_SIZE = 16
@@ -153,6 +152,20 @@ class PlayerSprite(pg.sprite.Sprite):
         elif self.lastMove == 3:
             self.image = self.charSet[ChImg.pLookNorth].convert_alpha()
 
+
+class ItemSprite(pg.sprite.Sprite): 
+    def __init__(self, x, y, img, itemModel, usedImg):
+        super().__init__()
+        self.width =  TILE_SIZE
+        self.height = TILE_SIZE
+        self.image = img.convert_alpha()
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+        self.itemModel = itemModel
+        self.usedImage = usedImg.convert_alpha()
+        print("Made")
+        print(self.rect.x, self.rect.y)
 
 class ImpassableTile(pg.sprite.Sprite):
     def __init__(self, x, y, tileImg ):
@@ -348,7 +361,10 @@ class GameMap():
                 if self.layer2[x,y] in self.blockedTiles:
                     self.blockedSprites.append(ImpassableTile(x*TILE_SIZE, y*TILE_SIZE,self.basicTileSet[self.layer2[x,y]])) 
                 if self.layer2[x,y] in self.itemTiles:
-                    self.itemSprites.append(ImpassableTile(x*TILE_SIZE, y*TILE_SIZE,self.basicTileSet[self.layer2[x,y]]))  
+                    if self.layer2[x,y] == TileImg.rocks:
+                        self.itemSprites.append(ItemSprite(x*TILE_SIZE, y*TILE_SIZE,self.basicTileSet[self.layer2[x,y]], Coin(), self.basicTileSet[self.layer1[x,y]] )) 
+                    elif self.layer2[x,y] == TileImg.jewels: 
+                        self.itemSprites.append(ItemSprite(x*TILE_SIZE, y*TILE_SIZE,self.basicTileSet[self.layer2[x,y]], Jewel(), self.basicTileSet[self.layer1[x,y]] )) 
 
                 ### Things Tile Set
                 if self.layer2[x,y] in self.doorTiles:
@@ -360,23 +376,26 @@ class GameMap():
 
 
 
-    def render_display(self):
+    def render_display(self, usedSpritesLocs=None):
         for x in range(0,SCREEN_LENGTH//TILE_SIZE):
-            for y in range(0,SCREEN_WIDTH//TILE_SIZE):
-                
-                #if self.layer2[x,y] != -1 and self.layer2[x,y] >= 1000:    ### TODO: make this more elegant
-                #    self.screen.blit(self.thingsTileSet[self.layer2[x,y]-1000],(x*TILE_SIZE,y*TILE_SIZE))
-            
-            
-                #if self.layer3[x,y] != -1 and self.layer3[x,y] >= 1000:    ### TODO: make this more elegant
-                #    self.screen.blit(self.thingsTileSet[self.layer3[x,y]-1000],(x*TILE_SIZE,y*TILE_SIZE))
-                
-    
-                    
+            for y in range(0,SCREEN_WIDTH//TILE_SIZE):                      
                 if self.layer1[x,y] != -1 and self.layer1[x,y] < THINGS_TILE_OFFSET:   
                     self.screen.blit(self.basicTileSet[self.layer1[x,y]],(x*TILE_SIZE,y*TILE_SIZE))
-                if self.layer2[x,y] != -1 and self.layer2[x,y] < THINGS_TILE_OFFSET:                             
-                    self.screen.blit(self.basicTileSet[self.layer2[x,y]],(x*TILE_SIZE,y*TILE_SIZE)) 
+                if self.layer2[x,y] != -1 and self.layer2[x,y] < THINGS_TILE_OFFSET:                    
+                    #hideTile = False
+                    if ((x*TILE_SIZE, y*TILE_SIZE) not in usedSpritesLocs):
+                        self.screen.blit(self.basicTileSet[self.layer2[x,y]],(x*TILE_SIZE,y*TILE_SIZE)) 
+
+
+                    '''
+                    if len(usedSpritesLocs)>0:
+                        for loc in usedSpritesLocs:  
+                            if loc[0] == x*TILE_SIZE and loc[1] == y*TILE_SIZE: 
+                                hideTile = True
+                                break
+                    if not hideTile: 
+                        self.screen.blit(self.basicTileSet[self.layer2[x,y]],(x*TILE_SIZE,y*TILE_SIZE)) 
+                    '''
                 if self.layer3[x,y] != -1 and self.layer3[x,y] < THINGS_TILE_OFFSET:                             
                     self.screen.blit(self.basicTileSet[self.layer3[x,y]],(x*TILE_SIZE,y*TILE_SIZE))         
                 if self.layer4[x,y] != -1 and self.layer4[x,y] < THINGS_TILE_OFFSET:                             

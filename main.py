@@ -35,6 +35,9 @@ blockedSprites  = gMap.get_blocked_sprites()
 itemSprites     = gMap.get_item_sprites()
 doorSprites     = gMap.get_door_sprites()
 animatedSprites = gMap.get_animated_sprites() 
+usedSprites     = [] 
+#usedSpritesLocs = []
+usedSpritesLocs = set()
 
 all_sprites_list.add(player)
 all_sprites_list.add(merchant)
@@ -43,12 +46,19 @@ all_sprites_list.add(itemSprites)
 all_sprites_list.add(doorSprites)
 all_sprites_list.add(animatedSprites)
 
+all_sprites_list.add(usedSprites)
+
+def collision_with_player(player, sprite):
+    if player.rect.colliderect(sprite.rect):
+        player.playerModel.addInventory(sprite.itemModel)   
+        return True
+    return False
 
 ### GUI TEST
 gui_on = False
 manager = pygame_gui.UIManager((400,400))
-hello_button = pygame_gui.elements.UIButton(relative_rect=pg.Rect((50, 50), (100, 50)),
-                                             text='Say Hello',
+hello_button = pygame_gui.elements.UITextBox('Say hey', 
+                                             pg.Rect((50, 50), (100, 50)),
                                              manager=manager)
 hello_button2 = pygame_gui.elements.UIButton(relative_rect=pg.Rect((50, 200), (100, 50)),
                                              text='Say Hello2',
@@ -61,7 +71,7 @@ hello_button2 = pygame_gui.elements.UIButton(relative_rect=pg.Rect((50, 200), (1
 #thing2= pygame_gui.elements.UIDropDownMenu(relative_rect=pg.Rect((50, 200), (100, 50)), manager=manager, options_list=["eggs", "ham", "spam"], starting_option="eggs")
 
 
-htm_text_block_2 = pygame_gui.elements.UITextBox('<font face=fira_code size=2 color=#000000><b>Hey, What the heck!</b>'
+'''htm_text_block_2 = pygame_gui.elements.UITextBox('<font face=fira_code size=2 color=#000000><b>Hey, What the heck!</b>'
                              '<br><br>'
                              'This is some <a href="test">text</a> in a different box,'
                              ' hooray for variety - '
@@ -72,6 +82,7 @@ htm_text_block_2 = pygame_gui.elements.UITextBox('<font face=fira_code size=2 co
                              pg.Rect((50, 200), (100, 50)),
                              manager=manager,
                              object_id="#text_box_2")
+                             '''
 
 window_surface = pg.display.set_mode((400, 400))
 
@@ -97,25 +108,28 @@ while not done:
         elif event.type == pg.KEYDOWN:
             if event.key == pg.K_q and gui_on:
                 gui_on = False
-                player.rect.y -= 16
+            if event.key == pg.K_i:
+                gui_on = True
+                time_delta = clock.tick(60)/1000.0
+
         elif event.type == pg.USEREVENT:
             if event.user_type == pygame_gui.UI_DROP_DOWN_MENU_CHANGED:
                 print("Selected option:", event.text)
         if gui_on:
             manager.process_events(event)
         
-
+    
     keys = pg.key.get_pressed()
-    if keys[pg.K_LEFT] and not gui_on:
+    if (keys[pg.K_LEFT] or keys[pg.K_a]) and not gui_on:
             player.move_left(playerSpeed)
 
-    if keys[pg.K_RIGHT] and not gui_on:
+    if (keys[pg.K_RIGHT] or keys[pg.K_d]) and not gui_on:
             player.move_right(playerSpeed)
 
-    if keys[pg.K_DOWN] and not gui_on:
+    if (keys[pg.K_DOWN] or keys[pg.K_s]) and not gui_on:
             player.move_down(playerSpeed)
 
-    if keys[pg.K_UP] and not gui_on:
+    if (keys[pg.K_UP] or keys[pg.K_w]) and not gui_on:
             player.move_up(playerSpeed)
 
     for sprite in blockedSprites[:]: 
@@ -123,16 +137,42 @@ while not done:
             player.rect.x = player.prevX
             player.rect.y = player.prevY 
 
-    for sprite in itemSprites[:]: 
-        if player.rect.colliderect(sprite.rect):
-            gui_on = True
-            time_delta = clock.tick(60)/1000.0
 
+    for sprite in itemSprites[:]: 
+        if player.rect.colliderect(sprite.rect) and sprite not in usedSprites:
+            if sprite.itemModel.name == "Coin":
+                print("Found money!")
+                player.playerModel.money += 10 
+                hello_button = pygame_gui.elements.UITextBox('Coin = ' + str(player.playerModel.money), 
+                                             pg.Rect((50, 50), (100, 50)),
+                                             manager=manager)
+
+            else: 
+                print("Found ", sprite.itemModel.name)
+                player.playerModel.addInventory(sprite.itemModel) 
+                newInventory = player.playerModel.inventory
+                newOptions = [i + " x " + str(newInventory[i][0]) for i in newInventory] 
+                print(newOptions)
+                thing2= pygame_gui.elements.UIDropDownMenu(relative_rect=pg.Rect((50, 200), (100, 50)), manager=manager, options_list=newOptions, starting_option=newOptions[0])
+
+            
+            #print(newInventory)
+            #thing2= pygame_gui.elements.UIDropDownMenu(relative_rect=pg.Rect((50, 200), (100, 50)), manager=manager, options_list=newInventory)
+
+            print(sprite.itemModel.name)  
+            usedSprites.append(sprite)
+            #usedSpritesLocs.append((sprite.rect.x, sprite.rect.y))
+            usedSpritesLocs.add((sprite.rect.x, sprite.rect.y))
+            sprite.kill()  
+            print(usedSpritesLocs)
+   
+            
     for sprite in doorSprites[:]:
         if player.rect.colliderect(sprite.rect):
             sprite.image = sprite.openImg.convert_alpha() 
         else:
             sprite.image = sprite.closeImg.convert_alpha() 
+
 
     if gui_on: 
         manager.update(time_delta)
@@ -140,15 +180,12 @@ while not done:
         manager.draw_ui(window_surface)
         pg.display.update()
     else:
-        gMap.render_display()
-
+        gMap.render_display(usedSpritesLocs)
         all_sprites_list.update()
         all_sprites_list.draw(screen)
-
         player.rest()
-
         pg.display.flip()
-
         clock.tick(30)
+
 
 

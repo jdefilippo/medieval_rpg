@@ -1,6 +1,28 @@
+class ItemModel: 
+    def __init__(self, name="",wgt=0,val=0):
+        self.name = ""
+        self.wgt = wgt
+        self.val = val
+
+### VALUABLES ### 
+
+class Coin(ItemModel):
+    def __init__(self, name="Coin",wgt=1,val=10):
+        self.name = name
+        self.wgt = wgt
+        self.val = val
+        self.id = 0
+
+class Jewel(ItemModel):
+    def __init__(self,name="Jewel",wgt=1,val=50,potency=1):
+        self.name = name
+        self.wgt = wgt 
+        self.val = val 
+        self.potency = potency
+        self.id = 1
 
 class PlayerModel: 
-    def __init__(self, name="Van Eycke", hp=1, maxHp=1, strength=0,inventory={}, curWgt=0, maxWgt=0, wealth=10, weapon=None): 
+    def __init__(self, name="Van Eycke", hp=1, maxHp=1, strength=0,inventory={}, curWgt=0, maxWgt=99, wealth=10, weapon=None, money=20): 
         self.name = name
         self.hp = hp
         self.maxHp = maxHp
@@ -10,6 +32,7 @@ class PlayerModel:
         self.maxWgt    = maxWgt
         self.wealth    = wealth
         self.weapon    = weapon
+        self.money     = money
 
     def equipWeapon(self, weapon):
         if self.weapon == None: 
