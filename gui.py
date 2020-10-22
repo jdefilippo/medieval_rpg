@@ -2,6 +2,28 @@ import pygame_gui
 import pygame as pg
 from globals import * 
 
+class TraderGUI(): 
+    def __init__(self, player, trader):
+        self.player = player
+        self.trader = trader
+        self.manager = pygame_gui.UIManager((SCREEN_WIDTH,SCREEN_LENGTH), pygame_gui.PackageResource(package='data.themes', resource='theme_2.json'))
+        self.trading_title = pygame_gui.elements.UILabel(pg.Rect((75, 0), (250, 50)), "TRADING",
+                                   manager=self.manager,
+                                   object_id='#inventory')
+
+    def hideAll(self): 
+        self.trading_title.hide()
+
+class MessageBoxGUI(): 
+    def __init__(self):
+        self.manager = pygame_gui.UIManager((SCREEN_WIDTH,SCREEN_LENGTH), pygame_gui.PackageResource(package='data.themes', resource='theme_2.json'))
+        self.trading_title = pygame_gui.elements.UILabel(pg.Rect((75, 0), (250, 50)), "TRADING",
+                                   manager=self.manager,
+                                   object_id='#inventory')
+
+    def hideAll(self): 
+        self.trading_title.hide()
+
 class InventoryGUI():
     def __init__(self, player):
         self.player  = player
@@ -36,5 +58,10 @@ class InventoryGUI():
     def update_money(self): 
         self.coin_stat.set_text('Coin: ' + str(self.player.player_model.money))
 
-
-
+    def hideAll(self):
+        self.stats_title.hide()
+        self.coin_stat.hide()
+        self.hp_stat.hide()
+        self.strength_stat.hide()
+        self.inventory_title.hide()
+        self.inventory.hide()

@@ -20,6 +20,9 @@ class MerchantSprite(pg.sprite.Sprite):
         self.second_loc_y  = y
         self.patrol_state = 1
         self.clock       = None
+        self.label       = "Hello!" 
+        self.display_label = False
+        self.start_display_time  = None
 
     def set_clock(self,clock):
         self.clock = clock

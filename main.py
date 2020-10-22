@@ -1,6 +1,7 @@
 import pygame as pg
 import random
 
+from datetime import datetime
 import pygame_gui
 from gamemap import *
 from gui import *
@@ -13,26 +14,23 @@ screen_rect = screen.get_rect()
 pg.display.set_caption('Medieval RPG')
 clock=pg.time.Clock()
 playerSpeed = 4
-
 gMap = GameMap(screen, 'mapDef.xlsx', 'art/characters.png', 'art/basictiles.png', 'art/things.png')
-
 gMap.initialize()
 
 all_sprites_list = pg.sprite.Group()
 
-player          = gMap.get_player_sprites()
-merchant        = gMap.get_friend_sprites()
+player           = gMap.get_player_sprites()
+friend_sprites   = gMap.get_friend_sprites()
 blocked_sprites  = gMap.get_blocked_sprites()
 item_sprites     = gMap.get_item_sprites()
 door_sprites     = gMap.get_door_sprites()
 animated_sprites = gMap.get_animated_sprites() 
 used_sprites     = [] 
 used_sprites_locs = set()
-merchant[0].set_clock(clock)
 
 
 all_sprites_list.add(player)
-all_sprites_list.add(merchant)
+all_sprites_list.add(friend_sprites)
 all_sprites_list.add(blocked_sprites)
 all_sprites_list.add(item_sprites)
 all_sprites_list.add(door_sprites)
@@ -44,7 +42,20 @@ all_sprites_list.add(used_sprites)
 
 gui_on = False
 
+
 inventory_gui = InventoryGUI(player)
+trader_gui    = TraderGUI(player, friend_sprites[0])
+
+
+### 
+###
+
+# pick a font you have and set its size
+myfont = pg.font.SysFont("Comic Sans MS", 15)
+# apply it to text on a label
+label = myfont.render("Python and Pygame are Fun!", 1, pg.Color('#000000'))
+# put the label object on the screen at point x=100, y=100
+
 
 window_surface = pg.display.set_mode((SCREEN_LENGTH, SCREEN_WIDTH))
 
@@ -53,8 +64,8 @@ background = pg.Surface((SCREEN_LENGTH, SCREEN_WIDTH))
 #background.fill(pg.Color('#000000'))
 background.fill(inventory_gui.manager.ui_theme.get_colour('dark_bg'))
 
-
-
+message_box_on = True
+start_time  = datetime.now()
 
 while not done:
 
@@ -100,6 +111,14 @@ while not done:
             player.rect.x = player.prev_x
             player.rect.y = player.prev_y 
 
+    for sprite in friend_sprites[:]: 
+        if player.rect.colliderect(sprite.rect):
+            player.rect.x = player.prev_x 
+            player.rect.y = player.prev_y
+            sprite.display_label = True
+            sprite.start_display_time = datetime.now()
+
+
 
     for sprite in item_sprites[:]: 
         if player.rect.colliderect(sprite.rect) and sprite not in used_sprites:
@@ -137,8 +156,27 @@ while not done:
         all_sprites_list.update()
         all_sprites_list.draw(screen)
         player.rest()
+
+        #if(message_box_on):
+        #    screen.blit(label, (0, 0))
+        #current_time = datetime.now()
+        #if(current_time - start_time).seconds > 3:
+        #    message_box_on = False
+        for sprite in friend_sprites[:]:
+            if sprite.display_label:
+                label = myfont.render(sprite.label, 1, pg.Color('#000000'))
+                screen.blit(label, (150,0))
+                if (datetime.now() - sprite.start_display_time).seconds > 3: 
+                    sprite.display_label = False
+
         pg.display.flip()
         clock.tick(30)
+
+        #if message_box_on == True: 
+        #    time_delta = clock.tick(60)/1000.0 ## may not do waht is expected, check for double counting
+        #    message_box_gui.manager.update(time_delta)
+        #    window_surface.blit(background, (0, 0))
+        #    message_box_gui.manager.draw_ui(window_surface)
 
 
 
