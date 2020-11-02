@@ -7,6 +7,34 @@ from globals import *
 from sprites import * 
 
 class GameMap():
+    '''
+    GameMap is responsible for 1. generating the initial game map from a multi-sheet excel spreadsheet 2. interpreting that spreadsheet based on 
+    a mapping from the spreadsheet elements to tile images 3. rendering the display of the map through pygame.
+
+    :param screen: 
+    :param screen_rect: 
+    :param map_file: 
+    :param char_file:
+    :param basic_file:
+    :param things_file:
+    :param char_tile_set:
+    :param basic_tile_set:
+    :param things_tile_set:
+    :param layer_1:
+    :param layer_2:
+    :param layer_3:
+    :param layer_4:
+    :param blocked_tiles
+    :param item_tiles
+    :param animated_tiles
+    :param door_tiles
+    :param blocked_sprites
+    :param item_sprites
+    :param friend_sprites
+    :param door_sprites
+    :param animated_sprites
+    :param player_sprite
+    '''
     def __init__(self, screen, map_file, char_file, basic_file, things_file):
         self.screen          = screen
         self.screen_rect     = screen.get_rect()
@@ -108,12 +136,6 @@ class GameMap():
                     else:
                         pass
 
-
-
-
-
-
-
                 ### Things Tile Set
                 if self.layer_2[x,y] in self.door_tiles:
                     self.door_sprites.append(DoorTile(x*TILE_SIZE, y*TILE_SIZE,self.things_tile_set[self.layer_2[x,y]-THINGS_TILE_OFFSET],self.things_tile_set[self.layer_2[x,y]-1000+36] ))  
@@ -130,31 +152,18 @@ class GameMap():
                 if self.layer_1[x,y] != -1 and self.layer_1[x,y] < THINGS_TILE_OFFSET:   
                     self.screen.blit(self.basic_tile_set[self.layer_1[x,y]],(x*TILE_SIZE,y*TILE_SIZE))
                 if self.layer_2[x,y] != -1 and self.layer_2[x,y] < THINGS_TILE_OFFSET:                    
-                    #hideTile = False
                     if ((x*TILE_SIZE, y*TILE_SIZE) not in usedSpritesLocs):
                         self.screen.blit(self.basic_tile_set[self.layer_2[x,y]],(x*TILE_SIZE,y*TILE_SIZE)) 
-
-
-                    '''
-                    if len(usedSpritesLocs)>0:
-                        for loc in usedSpritesLocs:  
-                            if loc[0] == x*TILE_SIZE and loc[1] == y*TILE_SIZE: 
-                                hideTile = True
-                                break
-                    if not hideTile: 
-                        self.screen.blit(self.basic_tile_set[self.layer_2[x,y]],(x*TILE_SIZE,y*TILE_SIZE)) 
-                    '''
                 if self.layer_3[x,y] != -1 and self.layer_3[x,y] < THINGS_TILE_OFFSET:                             
                     self.screen.blit(self.basic_tile_set[self.layer_3[x,y]],(x*TILE_SIZE,y*TILE_SIZE))         
                 if self.layer_4[x,y] != -1 and self.layer_4[x,y] < THINGS_TILE_OFFSET:                             
                     self.screen.blit(self.basic_tile_set[self.layer_4[x,y]],(x*TILE_SIZE,y*TILE_SIZE))  
 
-                #if self.layer_4[x,y] != -1 and self.layer_4[x,y] >= 1000:    ### TODO: make this more elegant
-                #    self.screen.blit(self.things_tile_set[self.layer_4[x,y]-1000],(x*TILE_SIZE,y*TILE_SIZE))
-
-
 
     def strip_from_sheet(self, sheet, start, size, columns, rows):
+        """
+        Utility function to divide tile sheets into equal chunks.
+        """
         frames = []
         for j in range(rows):
             for i in range(columns):
