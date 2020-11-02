@@ -225,4 +225,3 @@ class AnimationTile(pg.sprite.Sprite):
 
     def update(self, *args):
         self.animate()
-

@@ -114,7 +114,7 @@ class Mushrooms(ItemModel):
     :param potency: The potency of the item
     """
 
-    def __init__(self, name="Murshrooms", wgt=1, val=50, potency=1):
+    def __init__(self, name="Mushrooms", wgt=1, val=50, potency=1):
         self.name = name
         self.wgt = wgt
         self.val = val
