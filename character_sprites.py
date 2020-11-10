@@ -101,8 +101,8 @@ class TraderSprite(pg.sprite.Sprite):
             debug_log("lost")
 
     def update(self, *args):
-        pass
-        # self.patrol()
+        #pass
+        self.patrol()
 
 
 class PlayerSprite(pg.sprite.Sprite):
@@ -175,29 +175,38 @@ class PlayerSprite(pg.sprite.Sprite):
 
 
 class EnemySprite(pg.sprite.Sprite):
-    def __init__(self, x, y, char_set, screen_rec, inventory={}):
+    def __init__(self, x1, y1, x2, y2, char_set, dead_set, screen_rec, inventory={}):
         super().__init__()
         self.char_set = char_set
+        self.dead_set = dead_set
         self.image = self.char_set[ChImg.S_LOOK_WEST].convert_alpha()
         self.rect = self.image.get_rect()
         self.prev_x = 0
         self.prev_y = 0
         self.last_move = -1
-        self.rect.x = x
-        self.rect.y = y
+        self.rect.x = x1
+        self.rect.y = y1
         self.screen_rec = screen_rec
-        self.first_loc_x = x
-        self.first_loc_y = y
-        self.second_loc_x = x - 64
-        self.second_loc_y = y
+        self.first_loc_x = x1
+        self.first_loc_y = y1
+        self.second_loc_x = x2
+        self.second_loc_y = y2
         self.patrol_state = 1
         self.clock = None
         self.label = "Hello!"
         self.display_label = False
         self.start_display_time = None
         self.enemy_model = EnemyModel()
+        self.alive = True
+        self.pause_patrol = False
 
 
+    def express_defeat(self):
+            self.image = self.dead_set[DeadImg.S_DEAD].convert_alpha()
+            self.alive = False
+            self.pause_patrol = True
+
+            
 
     def move_right(self, pixels):
 
@@ -251,3 +260,41 @@ class EnemySprite(pg.sprite.Sprite):
         elif self.last_move == 3:
             self.image = self.char_set[ChImg.S_LOOK_NORTH].convert_alpha()
 
+    def patrol_horizontal(self):
+        if(self.rect.x <= self.first_loc_x and self.rect.x > self.second_loc_x and self.patrol_state == 1):
+            # debug_log("Case1")
+            self.move_left(1)
+        elif(self.rect.x == self.second_loc_x and self.patrol_state == 1):
+            # debug_log("Case2")
+            self.patrol_state = 2
+            # self.move_right(1)
+        elif(self.rect.x < self.first_loc_x and self.patrol_state == 2):
+            # debug_log("Case3")
+            self.move_right(1)
+        elif(self.rect.x == self.first_loc_x and self.patrol_state == 2):
+            self.move_left(1)
+            self.patrol_state = 1
+        else:
+            debug_log("lost")
+
+    # first loc y  = 100 
+    # second loc y = 90 
+    def patrol_vertical(self):
+        if(self.rect.y <= self.first_loc_y and self.rect.y > self.second_loc_y and self.patrol_state == 1):
+            debug_log("Case1")
+            self.move_up(1)
+        elif(self.rect.y == self.second_loc_y and self.patrol_state == 1):
+            debug_log("Case2")
+            self.patrol_state = 2
+        elif(self.rect.y < self.first_loc_y and self.patrol_state == 2):
+            debug_log("Case3")
+            self.move_down(1)
+        elif(self.rect.y == self.first_loc_y and self.patrol_state == 2):
+            self.patrol_state = 1
+        else:
+            debug_log("lost")
+
+    def update(self, *args):
+        if not self.pause_patrol:
+            #self.patrol_horizontal()
+            self.patrol_vertical()

@@ -39,16 +39,18 @@ class GameMap():
     :param animated_sprites
     :param player_sprite
     '''
-    def __init__(self, screen, map_file, char_file, basic_file, things_file):
+    def __init__(self, screen, map_file, char_file, basic_file, things_file, dead_file):
         self.screen          = screen
         self.screen_rect     = screen.get_rect()
         self.map_file         = map_file
         self.char_file        = char_file
         self.basic_file       = basic_file
         self.things_file      = things_file
+        self.dead_file        = dead_file
         self.char_tile_set     = None
         self.basic_tile_set    = None
         self.things_tile_set   = None
+        self.dead_tile_set     = None
         self.layer_1          = np.empty(1)
         self.layer_2          = np.empty(1)
         self.layer_3          = np.empty(1)
@@ -102,6 +104,8 @@ class GameMap():
         self.char_tile_set   = self.strip_from_sheet(pg.image.load(self.char_file),(0,0),(TILE_SIZE,TILE_SIZE),12,8)
         self.basic_tile_set  = self.strip_from_sheet(pg.image.load(self.basic_file),(0,0),(TILE_SIZE,TILE_SIZE),8,10)
         self.things_tile_set = self.strip_from_sheet(pg.image.load(self.things_file),(0,0),(TILE_SIZE,TILE_SIZE),12,8)
+        self.dead_tile_set   = self.strip_from_sheet(pg.image.load(self.dead_file),(0,0),(TILE_SIZE,TILE_SIZE),3,4)
+
 
         self.item_tiles     = set([TileImg.ROCKS,TileImg.JEWELS, TileImg.ARMOR, TileImg.MAGIC_SPELL, TileImg.SWORD, TileImg.HEALTH_POTION, TileImg.MUSHROOMS])
         self.blocked_tiles  = set([TileImg.WALL_1, TileImg.WALL_2, TileImg.WALL_3, TileImg.WALL_4,
@@ -117,7 +121,7 @@ class GameMap():
         trader = TraderSprite(125,336, self.char_tile_set, self.screen_rect)
         self.friend_sprites = [trader]
 
-        skeleton = EnemySprite(30,100, self.char_tile_set, self.screen_rect)
+        skeleton = EnemySprite(210, 100, 200, 90, self.char_tile_set, self.dead_tile_set, self.screen_rect)
         self.enemy_sprites = [skeleton]
 
 

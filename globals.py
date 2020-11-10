@@ -15,6 +15,9 @@ trader_inventory_item_selected = {}
 player_inventory_item_objects  = {} 
 trader_inventory_item_objects  = {} 
 
+class DeadImg: 
+    S_DEAD = 6
+
 class ChImg:
     """
     Mapping for art/characters.png

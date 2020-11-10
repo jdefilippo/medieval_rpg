@@ -26,7 +26,7 @@ class PlayerModel:
     def __init__(
             self,
             name="Van Eycke",
-            hp=20,
+            hp=40,
             maxHp=40,
             strength=5,
             inventory={},
@@ -45,36 +45,23 @@ class PlayerModel:
 
 
     def fight_enemy(self, enemy):
-        print("fight_enemy triggered")
         first_swing = random.randint(0,2)
         if first_swing == 0:  # opponent strikes first
             damage_to_player = math.ceil(np.random.rand() * self.strength)
-            print(damage_to_player)
             self.current_health  -= damage_to_player
             if(self.current_health > 0):
                 damage_to_enemy  = math.ceil(np.random.rand() * enemy.strength)
-                print(damage_to_enemy)
                 enemy.current_health -= damage_to_enemy
             else:
-                print("Player dead.")
+                return 1 
         else: # player strikes first 
             damage_to_enemy  = math.ceil(np.random.rand() * enemy.strength)
-            print(damage_to_enemy)
             enemy.current_health -= damage_to_enemy
-            if (enemy.current_health != 0):
+            if (enemy.current_health > 0):
                 damage_to_player = math.ceil(np.random.rand() * self.strength)
-                print(damage_to_player)
                 self.current_health  -= damage_to_player
             else:
-                print("Enemy dead")
-
-
-
-
-        
-
-        
-
+                return 0
 
     """
     Equip a weapon from the player's inventory.

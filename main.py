@@ -253,6 +253,8 @@ class BattleGUI:
 
 
 
+
+
     def hide(self):
         self.title.remove()
         self.player_img.remove()
@@ -308,7 +310,6 @@ class StatsGUI:
         self.money_label.config(text="Money: " + str(self.player.player_model.money), font=pg.font.SysFont("Arial", 20))
         self.stats_box = sgc.VBox(widgets =[self.name_label, self.health_label, self.strength_label, self.money_label], pos=(self.screen.rect.centerx-120, 80))
 
-        print(self.player.player_model.money)
 
 
     def hide(self):
@@ -342,7 +343,8 @@ def main():
         'mapDef.xlsx',
         'art/characters.png',
         'art/basictiles.png',
-        'art/things.png')
+        'art/things.png', 
+        'art/dead.png')
     gMap.initialize()
 
     clock = pg.time.Clock()
@@ -432,10 +434,8 @@ def main():
             if event.type == GUI:
 
                 if event.gui_type == "click" and event.widget is trader_gui.sell_button:
-                    print("Sell button")
                     for item in player_inventory_item_selected:
                         if player_inventory_item_selected[item] == True:
-                            print("This was selected to be sold: ", item)
 
                             # Inventory management
                             player.player_model.remove_item(item)
@@ -443,31 +443,32 @@ def main():
 
                             # Money calculation 
                             player.player_model.money += player_inventory_item_objects[item].val
-                            print(player.player_model.money)
 
                             # Update the view 
                             trader_gui.update_player_inventory_gui(player.player_model.inventory)
                             trader_gui.update_trader_inventory_gui(first_trader.trader_model.inventory)
                             trader_gui.update_stats()
 
-
                 if event.gui_type == "click" and event.widget is battle_gui.attack_option:
-                    battle_gui.player.player_model.fight_enemy(battle_gui.enemy.enemy_model)
-                    battle_gui.update_stats()
+                    outcome = battle_gui.player.player_model.fight_enemy(battle_gui.enemy.enemy_model)
+                    if outcome == 0: # enemy is killed 
+                        battle_gui_on = False
+                        battle_gui.update_stats()
+                        battle_gui.hide()
+                        battle_gui.enemy.express_defeat()
+                    elif outcome == 1: # player is killed
+                        quit()
+                    else:      
+                        battle_gui.update_stats()
 
                 if event.gui_type == "click" and event.widget is battle_gui.retreat_option:
                     battle_gui_on = False
                     battle_gui.hide()
-
-
-
+                    battle_gui.enemy.pause_patrol = False
                             
                 if event.gui_type == "click" and event.widget is trader_gui.buy_button:
-                    print("Buy button")
                     for item in trader_inventory_item_selected:
                         if trader_inventory_item_selected[item] == True:
-                            print("This was selected to be bought: ", item)
-                            print(player.player_model.money-trader_inventory_item_objects[item].val)
                             if player.player_model.money - trader_inventory_item_objects[item].val >= 0:
 
                                 # Inventory management
@@ -491,8 +492,6 @@ def main():
                 if event.gui_type == "click" and event.widget is inventory_gui.drop_button:
                     for item in player_inventory_item_selected:
                         if player_inventory_item_selected[item] == True:
-                            print("This was selected to be dropped: ", item)
-                            #print(player_inventory_item_objects[item])
                             player.player_model.remove_item(item)
                             inventory_gui.update_inventory_gui(player.player_model.inventory)
                     
@@ -509,9 +508,9 @@ def main():
                 if event.key == pg.K_q and stats_gui_on: 
                     stats_gui_on = False
                     stats_gui.hide()
-                if event.key == pg.K_q and battle_gui_on: 
-                    battle_gui_on = False
-                    battle_gui.hide()
+                #if event.key == pg.K_q and battle_gui_on: 
+                #    battle_gui_on = False
+                #    battle_gui.hide()
 
                 if event.key == pg.K_i and not inventory_gui_on:                      
                     inventory_gui_on = True
@@ -519,12 +518,12 @@ def main():
                     trader_gui.hide()
                     stats_gui.hide()
                     battle_gui.hide()
-                if event.key == pg.K_t and not trader_gui_on: 
-                    trader_gui_on = True
-                    trader_gui.show()
-                    inventory_gui.hide()
-                    stats_gui.hide()
-                    battle_gui.hide()
+                #if event.key == pg.K_t and not trader_gui_on: 
+                #    trader_gui_on = True
+                #    trader_gui.show()
+                #    inventory_gui.hide()
+                #    stats_gui.hide()
+                #    battle_gui.hide()
                 if event.key == pg.K_p and not stats_gui_on: 
                     stats_gui_on = True
                     stats_gui.show()
@@ -553,13 +552,20 @@ def main():
 
         for sprite in friend_sprites[:]:
             if player.rect.colliderect(sprite.rect):
-                player.rect.x = player.prev_x
-                player.rect.y = player.prev_y
-                sprite.display_label = True
-                sprite.start_display_time = datetime.now()
+                trader_gui_on = True
+                trader_gui.show()
+                inventory_gui.hide()
+                stats_gui.hide()
+                battle_gui.hide()
+                
+                # Trader logic --- 
+                #player.rect.x = player.prev_x
+                #player.rect.y = player.prev_y
+                #sprite.display_label = True
+                #sprite.start_display_time = datetime.now()
 
         for sprite in enemy_sprites[:]:
-            if player.rect.colliderect(sprite.rect):
+            if player.rect.colliderect(sprite.rect) and sprite.alive:
                 player.rect.x = player.prev_x
                 player.rect.y = player.prev_y
                 # sprite.display_label = True
@@ -569,25 +575,22 @@ def main():
                 trader_gui.hide()
                 stats_gui.hide()
                 battle_gui.show()
+                sprite.pause_patrol = True
 
         for sprite in item_sprites[:]:
             if player.rect.colliderect(sprite.rect) and sprite not in used_sprites:
                 if sprite.item_model.name == "Coin":
                     debug_log("Found money!")
-                    print("Found money")
                     player.player_model.money += 10
                     stats_gui.update_stats()
                     trader_gui.update_stats()
-                    #inventory_gui.update_money()
-
                 else:
-                    print(player.player_model.inventory)
                     player.player_model.add_inventory(sprite.item_model)
-                    print(player.player_model.inventory)
                     inventory_gui.update_inventory_gui(player.player_model.inventory)
-                    print(player.player_model.inventory)
+                    inventory_gui.hide()
+
                     trader_gui.update_player_inventory_gui(player.player_model.inventory)
-                    print(player.player_model.inventory)
+                    trader_gui.hide()
 
 
                 debug_log(sprite.item_model.name)
