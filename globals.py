@@ -8,10 +8,18 @@ THINGS_TILE_OFFSET = 1000
 DEBUG = 0
 
 
+
+
+player_inventory_item_selected = {}
+trader_inventory_item_selected = {} 
+player_inventory_item_objects  = {} 
+trader_inventory_item_objects  = {} 
+
 class ChImg:
     """
     Mapping for art/characters.png
     """
+    # PLAYER TILES
     P_LOOK_NORTH = 43
     P_LOOK_SOUTH = 7
     P_LOOK_EAST = 31
@@ -24,6 +32,7 @@ class ChImg:
     P_MOVE_SOUTH2 = 8
     P_MOVE_EAST2 = 32
     P_MOVE_WEST2 = 20
+    # TRADER TILES
     T_LOOK_SOUTH = 4
     T_LOOK_WEST = 16
     T_LOOK_EAST = 28
@@ -36,6 +45,20 @@ class ChImg:
     T_MOVE_EAST2 = 29
     T_MOVE_NORTH = 39
     T_MOVE_NORTH2 = 41
+    # SKELETON TILES
+    S_LOOK_NORTH = 43+3
+    S_LOOK_SOUTH = 7+3
+    S_LOOK_EAST = 31+3
+    S_LOOK_WEST = 19+3
+    S_MOVE_NORTH = 42+3
+    S_MOVE_SOUTH = 6+3
+    S_MOVE_EAST = 30+3
+    S_MOVE_WEST = 18+3
+    S_MOVE_NORTH2 = 44+3
+    S_MOVE_SOUTH2 = 8+3
+    S_MOVE_EAST2 = 32+3
+    S_MOVE_WEST2 = 20+3
+
 
 
 class TileImg:
