@@ -15,6 +15,8 @@ trader_inventory_item_selected = {}
 player_inventory_item_objects  = {} 
 trader_inventory_item_objects  = {} 
 
+
+
 class DeadImg: 
     S_DEAD = 6
 
@@ -68,6 +70,9 @@ class TileImg:
     """
     Mapping for art/basictiles.png
     """
+    GRASS = 11
+    ROAD  = 10
+    BLACK  = 22
     WALL_1 = 0
     WALL_2 = 1
     WALL_3 = 2
@@ -100,7 +105,18 @@ class TileImg:
     TORCH_2 = THINGS_TILE_OFFSET + 49
     TORCH_3 = THINGS_TILE_OFFSET + 50
     TORCH_4 = THINGS_TILE_OFFSET + 51
+    EXIT    = 99
 
+
+
+g_item_tiles     = set([TileImg.ROCKS,TileImg.JEWELS, TileImg.ARMOR, TileImg.MAGIC_SPELL, TileImg.SWORD, TileImg.HEALTH_POTION, TileImg.MUSHROOMS])
+g_blocked_tiles  = set([TileImg.WALL_1, TileImg.WALL_2, TileImg.WALL_3, TileImg.WALL_4,
+                                TileImg.WALL_5, TileImg.WALL_6, TileImg.WALL_7, TileImg.WALL_8,
+                                  TileImg.OCEAN, TileImg.EVERGREEN, TileImg.BASIC_TREE, 
+                                  TileImg.SUCCULENT, TileImg.ROCK_FACE, TileImg.MONUMENT, TileImg.BLACK, TileImg.MOUNTAIN_1, TileImg.MOUNTAIN_2])
+g_animated_tiles = set([TileImg.TORCH_1])
+g_door_tiles     = set([TileImg.DOOR_CLOSED, TileImg.DOOR_OPENING_1, TileImg.DOOR_OPENING_2, TileImg.DOOR_OPENING_3])
+      
 
 def debug_log(s):
     """

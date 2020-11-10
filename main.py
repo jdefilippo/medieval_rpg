@@ -28,34 +28,30 @@ def main():
     pg.display.set_caption('Medieval RPG')
     clock = pg.time.Clock()
     playerSpeed = 4
-    gMap = GameMap(
+    game_map = GameMap(
         screen,
-        'mapDef.xlsx',
+        'home.xlsx',
         'art/characters.png',
         'art/basictiles.png',
         'art/things.png', 
         'art/dead.png')
-    gMap.initialize()
-
+    game_map.initialize()
     clock = pg.time.Clock()
 
 
-    all_sprites_list = pg.sprite.Group()
 
-    player = gMap.get_player_sprites()
-    friend_sprites = gMap.get_friend_sprites()
-    enemy_sprites  = gMap.get_enemy_sprites()
-    blocked_sprites = gMap.get_blocked_sprites()
-    item_sprites = gMap.get_item_sprites()
-    door_sprites = gMap.get_door_sprites()
-    animated_sprites = gMap.get_animated_sprites()
+    player = game_map.get_player_sprites()
+    
+    friend_sprites = game_map.get_friend_sprites()
+    enemy_sprites  = game_map.get_enemy_sprites()
+    blocked_sprites = game_map.get_blocked_sprites()
+    item_sprites = game_map.get_item_sprites()
+    door_sprites = game_map.get_door_sprites()
+    animated_sprites = game_map.get_animated_sprites()
+    exit_sprites = game_map.get_exit_sprites()
     used_sprites = []
     used_sprites_locs = set()
-
-
-    
-
-
+    all_sprites_list = pg.sprite.Group()
     all_sprites_list.add(player)
     all_sprites_list.add(friend_sprites)
     all_sprites_list.add(blocked_sprites)
@@ -63,7 +59,6 @@ def main():
     all_sprites_list.add(door_sprites)
     all_sprites_list.add(animated_sprites)
     all_sprites_list.add(enemy_sprites)
-
     all_sprites_list.add(used_sprites)
 
     ### UPDATE THIS
@@ -295,33 +290,30 @@ def main():
             else:
                 sprite.image = sprite.closeImg.convert_alpha()
 
-        if gui_on:
-            pass
-            #inventory_gui.manager.update(time_delta)
-            #window_surface.blit(background, (0, 0))
-            #inventory_gui.manager.draw_ui(window_surface)
-            #pg.display.update()
-        else:
-            gMap.render_display(used_sprites_locs)
-            all_sprites_list.update()
-            all_sprites_list.draw(screen)
-            player.rest()
+        for sprite in exit_sprites[:]: 
+            if player.rect.colliderect(sprite.rect):
+                print("EXITING MAP")
 
-            for sprite in friend_sprites[:]:
-                if sprite.display_label:
-                    label = my_font.render(sprite.label, 1, pg.Color('#000000'))
-                    screen.blit(label, (150, 0))
-                    if (datetime.now() - sprite.start_display_time).seconds > 3:
-                        sprite.display_label = False
+        game_map.render_display(used_sprites_locs)
+        all_sprites_list.update()
+        all_sprites_list.draw(screen)
+        player.rest()
+
+        for sprite in friend_sprites[:]:
+            if sprite.display_label:
+                label = my_font.render(sprite.label, 1, pg.Color('#000000'))
+                screen.blit(label, (150, 0))
+                if (datetime.now() - sprite.start_display_time).seconds > 3:
+                    sprite.display_label = False
 
 
-            if inventory_gui_on or trader_gui_on or stats_gui_on or battle_gui_on: 
-                gui_screen.fill((0,0,0))
-                sgc.update(time)
+        if inventory_gui_on or trader_gui_on or stats_gui_on or battle_gui_on: 
+            gui_screen.fill((0,0,0))
+            sgc.update(time)
 
 
-            pg.display.flip()
-            clock.tick(30)
+        pg.display.flip()
+        clock.tick(30)
 
 
 if __name__=="__main__": 

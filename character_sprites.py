@@ -5,7 +5,7 @@ from item_sprites import *
 from character_models import PlayerModel
 
 class TraderSprite(pg.sprite.Sprite):
-    def __init__(self, x, y, char_set, screen_rec, inventory={}):
+    def __init__(self, x1, y1, x2, y2, char_set, screen_rec, inventory={}):
         super().__init__()
         self.char_set = char_set
         self.image = self.char_set[ChImg.T_LOOK_WEST].convert_alpha()
@@ -13,13 +13,13 @@ class TraderSprite(pg.sprite.Sprite):
         self.prev_x = 0
         self.prev_y = 0
         self.last_move = -1
-        self.rect.x = x
-        self.rect.y = y
+        self.rect.x = x1
+        self.rect.y = y1
         self.screen_rec = screen_rec
-        self.first_loc_x = x
-        self.first_loc_y = y
-        self.second_loc_x = x - 64
-        self.second_loc_y = y
+        self.first_loc_x = x1
+        self.first_loc_y = y1
+        self.second_loc_x = x2
+        self.second_loc_y = y2
         self.patrol_state = 1
         self.clock = None
         self.label = "Hello!"
@@ -106,7 +106,7 @@ class TraderSprite(pg.sprite.Sprite):
 
 
 class PlayerSprite(pg.sprite.Sprite):
-    def __init__(self, char_set, screen_rec):
+    def __init__(self, x, y, char_set, screen_rec):
         super().__init__()
         self.char_set = char_set
         self.image = self.char_set[ChImg.P_LOOK_EAST].convert_alpha()
@@ -116,6 +116,8 @@ class PlayerSprite(pg.sprite.Sprite):
         self.last_move = -1
         self.player_model = PlayerModel()
         self.screen_rec = screen_rec
+        self.rect.x = x
+        self.rect.y = y
 
 
 
@@ -200,14 +202,11 @@ class EnemySprite(pg.sprite.Sprite):
         self.alive = True
         self.pause_patrol = False
 
-
     def express_defeat(self):
             self.image = self.dead_set[DeadImg.S_DEAD].convert_alpha()
             self.alive = False
             self.pause_patrol = True
-
             
-
     def move_right(self, pixels):
 
         if self.last_move == 0:
@@ -277,8 +276,6 @@ class EnemySprite(pg.sprite.Sprite):
         else:
             debug_log("lost")
 
-    # first loc y  = 100 
-    # second loc y = 90 
     def patrol_vertical(self):
         if(self.rect.y <= self.first_loc_y and self.rect.y > self.second_loc_y and self.patrol_state == 1):
             debug_log("Case1")
