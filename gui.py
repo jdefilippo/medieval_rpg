@@ -241,6 +241,7 @@ class BattleGUI:
 
 
     def show(self):
+        self.update_stats()
         self.title.add()
         self.player_img.add()
         self.enemy_img.add()

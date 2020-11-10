@@ -61,7 +61,6 @@ def main():
     all_sprites_list.add(enemy_sprites)
     all_sprites_list.add(used_sprites)
 
-    ### UPDATE THIS
     gui_screen = sgc.surface.Screen((SCREEN_LENGTH, SCREEN_WIDTH))
     my_font = pg.font.SysFont("Arial", 30)
     my_font_2 = pg.font.SysFont("Arial", 20)
@@ -79,9 +78,6 @@ def main():
 
     trader_gui.update_trader_inventory_gui(first_trader.trader_model.inventory)
 
-    first_enemy = enemy_sprites[0]
-
-
     player.player_model.add_inventory(Jewel())
     inventory_gui.update_inventory_gui(player.player_model.inventory)
     trader_gui.update_player_inventory_gui(player.player_model.inventory)
@@ -89,23 +85,17 @@ def main():
     stats_gui = StatsGUI(gui_screen, my_font, player)
     stats_gui_on = False
 
-    battle_gui = BattleGUI(gui_screen, my_font, player, first_enemy)
-    battle_gui_on = False
-
-
     gui_on = False
 
-    # pick a font you have and set its size
-    my_font = pg.font.SysFont("Comic Sans MS", 15)
+    # Initialize all battle guis
+    all_battle_guis = [] 
+    for enemy in enemy_sprites: 
+        all_battle_guis.append(BattleGUI(gui_screen, my_font, player, enemy))
+    battle_gui_on = False
+    battle_gui = all_battle_guis[0]
+
     # apply it to text on a label
     label = my_font.render("Python and Pygame are Fun!", 1, pg.Color('#000000'))
-    # put the label object on the screen at point x=100, y=100
-    window_surface = pg.display.set_mode((SCREEN_LENGTH, SCREEN_WIDTH))
-
-    background = pg.Surface((SCREEN_LENGTH, SCREEN_WIDTH))
-
-    message_box_on = True
-    start_time = datetime.now()
 
     while not done:
 
@@ -235,8 +225,8 @@ def main():
                 player.rect.x = player.prev_x
                 player.rect.y = player.prev_y
 
-        for sprite in friend_sprites[:]:
-            if player.rect.colliderect(sprite.rect):
+        for idx, friend in enumerate(friend_sprites[:]):
+            if player.rect.colliderect(friend.rect):
                 trader_gui_on = True
                 trader_gui.show()
                 inventory_gui.hide()
@@ -249,18 +239,17 @@ def main():
                 #sprite.display_label = True
                 #sprite.start_display_time = datetime.now()
 
-        for sprite in enemy_sprites[:]:
-            if player.rect.colliderect(sprite.rect) and sprite.alive:
+        for idx, enemy in enumerate(enemy_sprites[:]):
+            if player.rect.colliderect(enemy.rect) and enemy.alive:
                 player.rect.x = player.prev_x
                 player.rect.y = player.prev_y
-                # sprite.display_label = True
-                #sprite.start_display_time = datetime.now()
                 battle_gui_on = True
+                battle_gui = all_battle_guis[idx]
                 inventory_gui.hide()                    
                 trader_gui.hide()
                 stats_gui.hide()
                 battle_gui.show()
-                sprite.pause_patrol = True
+                enemy.pause_patrol = True
 
         for sprite in item_sprites[:]:
             if player.rect.colliderect(sprite.rect) and sprite not in used_sprites:
