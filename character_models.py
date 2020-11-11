@@ -169,14 +169,7 @@ class PlayerModel:
         else:
             self.inventory[itemName][0] -= 1
 
-
-        #if first_swing == 1: 
-        #    player_turn = True
-        #else:
-        #    player_turn = False
-        #print(player_turn)
-            
-    
+   
 
 class EnemyModel:
     """
@@ -189,9 +182,68 @@ class EnemyModel:
 
     def __init__(
             self,
-            name="Van Eycke",
+            name="Enemy",
             hp=20,
             maxHp=40,
+            strength=5):
+        self.name = name
+        self.current_health = hp
+        self.health_capacity = maxHp
+        self.strength = strength
+    
+class SkeletonModel(EnemyModel):
+    """
+    Creates a model representation for PlayerModel with default arguments.
+    :param name: The name of the player
+    :param hp: The hit point
+    :param maxHp: The value of the item
+    :param strength: The potency of the item
+    """
+
+    def __init__(
+            self,
+            name="Skeleton",
+            hp=15,
+            maxHp=40,
+            strength=4):
+        super().__init__(name, hp, maxHp, strength)
+       
+    
+class BatModel:
+    """
+    Creates a model representation for PlayerModel with default arguments.
+    :param name: The name of the player
+    :param hp: The hit point
+    :param maxHp: The value of the item
+    :param strength: The potency of the item
+    """
+
+    def __init__(
+            self,
+            name="Enemy",
+            hp=20,
+            maxHp=10,
+            strength=3):
+        self.name = name
+        self.current_health = hp
+        self.health_capacity = maxHp
+        self.strength = strength
+
+
+class GhostModel:
+    """
+    Creates a model representation for PlayerModel with default arguments.
+    :param name: The name of the player
+    :param hp: The hit point
+    :param maxHp: The value of the item
+    :param strength: The potency of the item
+    """
+
+    def __init__(
+            self,
+            name="Enemy",
+            hp=20,
+            maxHp=15,
             strength=5):
         self.name = name
         self.current_health = hp

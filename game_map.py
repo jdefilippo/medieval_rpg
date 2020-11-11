@@ -102,8 +102,8 @@ class GameMap():
                 self.player_sprite = PlayerSprite(row[1],row[2],self.char_tile_set, self.screen_rect)
             elif row[0] == 'T':
                 self.friend_sprites.append(TraderSprite(row[1],row[2], row[3], row[4], self.char_tile_set, self.screen_rect))
-            elif row[0] == 'E':
-                self.enemy_sprites.append(EnemySprite(row[1],row[2], row[3], row[4], self.char_tile_set, self.dead_tile_set, self.screen_rect))
+            elif row[0] == 'S':
+                self.enemy_sprites.append(SkeletonSprite(row[1],row[2], row[3], row[4], self.char_tile_set, self.dead_tile_set, self.screen_rect))
 
 
         # Generate all item sprites

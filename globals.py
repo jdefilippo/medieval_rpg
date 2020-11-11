@@ -19,6 +19,10 @@ trader_inventory_item_objects  = {}
 
 class DeadImg: 
     S_DEAD = 6
+    P_DEAD = 5
+    M_DEAD = 7
+    B_DEAD = 8 
+    G_DEAD = 9 
 
 class ChImg:
     """
@@ -63,6 +67,45 @@ class ChImg:
     S_MOVE_SOUTH2 = 8+3
     S_MOVE_EAST2 = 32+3
     S_MOVE_WEST2 = 20+3
+    # SWAP MONSTER TILES
+    M_LOOK_SOUTH = 49
+    M_LOOK_WEST  = 49+(12*1)
+    M_LOOK_EAST  = 49+(12*2)
+    M_LOOK_NORTH = 49+(12*3)
+    M_MOVE_SOUTH   = 48 
+    M_MOVE_WEST    = 48+(12*1) 
+    M_MOVE_EAST    = 48+(12*2) 
+    M_MOVE_NORTH   = 48+(12*3)
+    M_MOVE_SOUTH2   = 50 
+    M_MOVE_WEST2    = 50+(12*1) 
+    M_MOVE_EAST2    = 50+(12*2) 
+    M_MOVE_NORTH2   = 50+(12*3)
+    # BAT TILES 
+    B_LOOK_SOUTH = 52
+    B_LOOK_WEST  = 52+(12*1)
+    B_LOOK_EAST  = 52+(12*2)
+    B_LOOK_NORTH = 52+(12*3)
+    B_MOVE_SOUTH   = 51 
+    B_MOVE_WEST    = 51+(12*1) 
+    B_MOVE_EAST    = 51+(12*2) 
+    B_MOVE_NORTH   = 51+(12*3)
+    B_MOVE_SOUTH2   = 53 
+    B_MOVE_WEST2    = 53+(12*1) 
+    B_MOVE_EAST2    = 53+(12*2) 
+    B_MOVE_NORTH2   = 53+(12*3)
+    # GHOST TILES 
+    G_LOOK_SOUTH = 55
+    G_LOOK_WEST  = 55+(12*1)
+    G_LOOK_EAST  = 55+(12*2)
+    G_LOOK_NORTH = 55+(12*3)
+    G_MOVE_SOUTH   = 54 
+    G_MOVE_WEST    = 54+(12*1) 
+    G_MOVE_EAST    = 54+(12*2) 
+    G_MOVE_NORTH   = 54+(12*3)
+    G_MOVE_SOUTH2   = 53 
+    G_MOVE_WEST2    = 56+(12*1) 
+    G_MOVE_EAST2    = 56+(12*2) 
+    G_MOVE_NORTH2   = 56+(12*3)
 
 
 
