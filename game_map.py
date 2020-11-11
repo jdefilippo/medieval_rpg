@@ -69,31 +69,7 @@ class GameMap():
         self.enemy_sprites    = [] 
         self.exit_sprites     = [] 
 
-    def get_enemy_sprites(self):
-        return self.enemy_sprites
 
-    def get_friend_sprites(self):
-        return self.friend_sprites
-
-    def get_player_sprites(self):
-        return self.player_sprite
-
-    def get_blocked_sprites(self):
-        return self.blocked_sprites 
-
-    def get_item_sprites(self):
-        return self.item_sprites
-
-    def get_door_sprites(self):
-        return self.door_sprites
-
-    def get_animated_sprites(self):
-        return self.animated_sprites
-
-    def get_exit_sprites(self):
-        return self.exit_sprites
-
-    def initialize(self):        
         df = pd.read_excel(self.map_file, sheet_name="L1", header=None)
         self.layer_1 = np.transpose(df.to_numpy())
 
@@ -162,6 +138,34 @@ class GameMap():
                     self.animated_sprites.append(AnimationTile(x*TILE_SIZE, y*TILE_SIZE,[self.things_tile_set[self.layer_2[x,y]-THINGS_TILE_OFFSET],
                                                                                     self.things_tile_set[self.layer_2[x,y]-THINGS_TILE_OFFSET+1],
                                                                                     self.things_tile_set[self.layer_2[x,y]-THINGS_TILE_OFFSET+2]]))
+
+    def get_enemy_sprites(self):
+        return self.enemy_sprites
+
+    def get_friend_sprites(self):
+        return self.friend_sprites
+
+    def get_player_sprites(self):
+        return self.player_sprite
+
+    def get_blocked_sprites(self):
+        return self.blocked_sprites 
+
+    def get_item_sprites(self):
+        return self.item_sprites
+
+    def get_door_sprites(self):
+        return self.door_sprites
+
+    def get_animated_sprites(self):
+        return self.animated_sprites
+
+    def get_exit_sprites(self):
+        return self.exit_sprites
+
+    def initialize(self):     
+        pass   
+
 
 
     # blit successive layers in order layer1-layer4

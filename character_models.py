@@ -43,6 +43,12 @@ class PlayerModel:
         self.money = money
         self.strength = strength
 
+    def process_item(self, item_model):
+        if item_model.name == "Coin":
+            self.money += 10
+        else:
+            self.add_inventory(item_model)
+
 
     def fight_enemy(self, enemy):
         first_swing = random.randint(0,2)
