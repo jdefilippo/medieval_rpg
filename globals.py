@@ -148,7 +148,8 @@ class TileImg:
     TORCH_2 = THINGS_TILE_OFFSET + 49
     TORCH_3 = THINGS_TILE_OFFSET + 50
     TORCH_4 = THINGS_TILE_OFFSET + 51
-    EXIT    = 99
+    EXIT_CAVE   = 99
+    EXIT_HOME   = 100
 
 
 

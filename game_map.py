@@ -104,6 +104,10 @@ class GameMap():
                 self.friend_sprites.append(TraderSprite(row[1],row[2], row[3], row[4], self.char_tile_set, self.screen_rect))
             elif row[0] == 'S':
                 self.enemy_sprites.append(SkeletonSprite(row[1],row[2], row[3], row[4], self.char_tile_set, self.dead_tile_set, self.screen_rect))
+            elif row[0] == 'G':
+                self.enemy_sprites.append(GhostSprite(row[1],row[2], row[3], row[4], self.char_tile_set, self.dead_tile_set, self.screen_rect))
+            elif row[0] == 'B':
+                self.enemy_sprites.append(BatSprite(row[1],row[2], row[3], row[4], self.char_tile_set, self.dead_tile_set, self.screen_rect))
 
 
         # Generate all item sprites
@@ -130,7 +134,7 @@ class GameMap():
                         self.item_sprites.append(ItemSprite(x*TILE_SIZE, y*TILE_SIZE,self.basic_tile_set[self.layer_2[x,y]], Mushrooms(), self.basic_tile_set[self.layer_1[x,y]] ))
                     else:
                         pass
-                if self.layer_2[x,y] == TileImg.EXIT: 
+                if self.layer_2[x,y] == TileImg.EXIT_CAVE: 
                     self.exit_sprites.append(ExitTile(x*TILE_SIZE, y*TILE_SIZE, self.basic_tile_set[TileImg.ROAD]))
                 if self.layer_2[x,y] in self.door_tiles:
                     self.door_sprites.append(DoorTile(x*TILE_SIZE, y*TILE_SIZE,self.things_tile_set[self.layer_2[x,y]-THINGS_TILE_OFFSET],self.things_tile_set[self.layer_2[x,y]-1000+36] ))  
@@ -175,8 +179,9 @@ class GameMap():
                 if self.layer_1[x,y] != -1 and self.layer_1[x,y] < THINGS_TILE_OFFSET:   
                     self.screen.blit(self.basic_tile_set[self.layer_1[x,y]],(x*TILE_SIZE,y*TILE_SIZE))
                 if self.layer_2[x,y] != -1 and self.layer_2[x,y] < THINGS_TILE_OFFSET: 
-                    if self.layer_2[x,y] == TileImg.EXIT: 
-                        self.screen.blit(self.basic_tile_set[TileImg.ROAD], (x*TILE_SIZE,y*TILE_SIZE))
+                    if self.layer_2[x,y] == TileImg.EXIT_CAVE: 
+                        pass
+                        #self.screen.blit(self.basic_tile_set[TileImg.ROAD], (x*TILE_SIZE,y*TILE_SIZE))
                     else:
                         if ((x*TILE_SIZE, y*TILE_SIZE) not in usedSpritesLocs):
                             self.screen.blit(self.basic_tile_set[self.layer_2[x,y]],(x*TILE_SIZE,y*TILE_SIZE)) 

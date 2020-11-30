@@ -203,7 +203,7 @@ class SkeletonModel(EnemyModel):
     def __init__(
             self,
             name="Skeleton",
-            hp=15,
+            hp=20,
             maxHp=40,
             strength=4):
         super().__init__(name, hp, maxHp, strength)
